@@ -8,7 +8,7 @@ eureka:
     fetch-registry: true
     service-url:
       defaultZone: http://localhost:8761/eureka
-      
+
 management:
   endpoints:
     web:
@@ -17,6 +17,7 @@ management:
         - "routes"
 
 zuul:
+  sensitive-headers: Cookie,Set-Cookie
   routes:
     pagamentos:
       stripPrefix: false
@@ -24,5 +25,12 @@ zuul:
     distancia:
       stripPrefix: false
       path: /distancia/**
+    autorizacao:
+      path: /login/**
     monolito:
       path: /**
+
+security:
+  oauth2:
+    resource:
+      user-info-uri: http://localhost:8088/user
