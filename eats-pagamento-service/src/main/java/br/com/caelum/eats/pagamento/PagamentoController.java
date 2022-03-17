@@ -15,11 +15,11 @@ import java.util.stream.Collectors;
 class PagamentoController {
 
 	private PagamentoRepository pagamentoRepo;
-	private PedidoService pedidoService;
+	private PagamentoService pagamentoService;
 
 	@GetMapping
 	ResponseEntity<List<PagamentoDto>> lista() {
-		return ResponseEntity.ok(pagamentoRepo.findAll()
+		return ResponseEntity.ok(pagamentoService.lista()
 				.stream()
 				.map(PagamentoDto::new)
 				.collect(Collectors.toList()));
@@ -34,15 +34,14 @@ class PagamentoController {
 
 	@PostMapping
 	ResponseEntity<PagamentoDto> cria(@RequestBody Pagamento pagamento, UriComponentsBuilder uriBuilder) {
-		pagamento.setStatus(Pagamento.Status.CRIADO);
-		Pagamento salvo = pagamentoRepo.save(pagamento);
+		Pagamento salvo = pagamentoService.cria(pagamento);
 		URI path = uriBuilder.path("/pagamentos/{id}").buildAndExpand(salvo.getId()).toUri();
 		return ResponseEntity.created(path).body(new PagamentoDto(salvo));
 	}
 
 	@PutMapping("/{id}")
 	PagamentoDto confirma(@PathVariable("id") Long id) {
-		Pagamento pagamento = pedidoService.notificaServicoDePedidoParaMudarStatus(id, new MudancaDeStatusDoPedido("pago"));
+		Pagamento pagamento = pagamentoService.confirma(id, new MudancaDeStatusDoPedido("pago"));
 		return new PagamentoDto(pagamento);
 	}
 
