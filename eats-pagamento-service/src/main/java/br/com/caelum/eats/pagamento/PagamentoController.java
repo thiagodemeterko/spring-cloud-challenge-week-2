@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 class PagamentoController {
 
 	private PagamentoRepository pagamentoRepo;
-	private PedidoClienteComFeign pedidoCliente;
+	private PedidoService pedidoService;
 
 	@GetMapping
 	ResponseEntity<List<PagamentoDto>> lista() {
@@ -42,10 +42,7 @@ class PagamentoController {
 
 	@PutMapping("/{id}")
 	PagamentoDto confirma(@PathVariable("id") Long id) {
-		Pagamento pagamento = pagamentoRepo.findById(id).orElseThrow(ResourceNotFoundException::new);
-		pagamento.setStatus(Pagamento.Status.CONFIRMADO);
-		pedidoCliente.notificaServicoDePedidoParaMudarStatus(pagamento.getPedidoId(), new MudancaDeStatusDoPedido("pago"));
-		pagamentoRepo.save(pagamento);
+		Pagamento pagamento = pedidoService.notificaServicoDePedidoParaMudarStatus(id, new MudancaDeStatusDoPedido("pago"));
 		return new PagamentoDto(pagamento);
 	}
 
