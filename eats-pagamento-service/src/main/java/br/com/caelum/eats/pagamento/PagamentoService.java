@@ -22,7 +22,7 @@ public class PagamentoService {
     @HystrixCommand(threadPoolKey = "criaThreadPool")
     public Pagamento cria(Pagamento pagamento) {
         pagamento.setStatus(Pagamento.Status.CRIADO);
-        return pagamentoRepo.save(pagamento);bul
+        return pagamentoRepo.save(pagamento);
     }
 
     @HystrixCommand(fallbackMethod = "confirmaFallback", threadPoolKey = "confirmaThreadPool")
